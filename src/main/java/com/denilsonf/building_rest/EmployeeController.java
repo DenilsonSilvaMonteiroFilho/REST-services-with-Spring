@@ -54,15 +54,12 @@ CollectionModel<EntityModel<Employee>> all() {
   // Single item
   
   @GetMapping("/employees/{id}")
-EntityModel<Employee> one(@PathVariable Long id) {
+  EntityModel<Employee> one(@PathVariable Long id) {
 
-  Employee employee = repository.findById(id) //
-      .orElseThrow(() -> new EmployeeNotFoundException(id));
+    Employee employee = repository.findById(id).orElseThrow(() -> new EmployeeNotFoundException(id));
 
-  return EntityModel.of(employee, //
-      linkTo(methodOn(EmployeeController.class).one(id)).withSelfRel(),
-      linkTo(methodOn(EmployeeController.class).all()).withRel("employees"));
-}
+    return assembler.toModel(employee);
+  }
 
   @PutMapping("/employees/{id}")
   Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
